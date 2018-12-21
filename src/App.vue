@@ -3,28 +3,40 @@
     <AppMap
       :api-key="mapProps.apiKey"
       :center="mapProps.center"
-      @polygon-click="polygonClick">
+      @polygon-click="polygonClick"
+      @map-click="mapClick">
     </AppMap>
+
+    <DistrictDetails :details="districtDetails"></DistrictDetails>
   </div>
 </template>
 
 <script>
 import AppMap from '@/components/AppMap.vue';
-import { mapState } from 'vuex';
+import DistrictDetails from '@/components/DistrictDetails.vue';
+
+import { mapState, mapActions, mapMutations } from 'vuex';
 
 export default {
   name: 'app',
   components: {
     AppMap,
+    DistrictDetails,
   },
   methods: {
+    ...mapActions(['setDistrictDetails']),
+    ...mapMutations(['HIDE_POPUP']),
     polygonClick(e) {
-      console.log(e.properties);
+      this.setDistrictDetails({ data: e.properties });
+    },
+    mapClick() {
+      this.HIDE_POPUP({ show: false });
     },
   },
   computed: {
     ...mapState([
       'mapProps',
+      'districtDetails',
     ]),
   },
 };

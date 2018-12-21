@@ -84,14 +84,16 @@ export default {
     },
   },
   beforeMount() {
-    window.initMap = window.initMap || this.initMap;
+    if (!window.initMap) {
+      window.initMap = this.initMap;
 
-    const script = document.createElement('script');
-    script.async = true;
-    script.defer = true;
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${this.apiKey}&callback=initMap`;
+      const script = document.createElement('script');
+      script.async = true;
+      script.defer = true;
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${this.apiKey}&callback=initMap`;
 
-    document.body.appendChild(script);
+      document.body.appendChild(script);
+    }
   },
   mounted() {
     this.checkMapInstance(() => {
@@ -107,8 +109,6 @@ export default {
           const computeLength = google.maps.geometry.spherical
             .computeLength(districtPolygon.getPath());
 
-          districtPolygon.setOptions({ strokeColor: '#149dd2' });
-
           this.$emit('polygon-click', {
             properties: Object.assign({}, polygon.properties, {
               area: (computeArea / 1000).toFixed(2),
@@ -118,14 +118,21 @@ export default {
           });
         });
 
-        google.maps.event.addListener(districtPolygon, 'mouseover', () => districtPolygon.setOptions({ fillOpacity: 0.8 }));
+        google.maps.event
+          .addListener(districtPolygon, 'mouseover', () => districtPolygon
+            .setOptions({ fillOpacity: 0.8 }));
 
-        google.maps.event.addListener(districtPolygon, 'mouseout', () => districtPolygon.setOptions({ fillOpacity: 0.6 }));
+        google.maps.event
+          .addListener(districtPolygon, 'mouseout', () => districtPolygon
+            .setOptions({ fillOpacity: 0.6 }));
 
         districtPolygon.setMap(this.mapInstance);
 
         return list;
       }));
+
+      // Listener fired when the map is clicked
+      google.maps.event.addListener(this.mapInstance, 'click', e => this.$emit('map-click', e));
     });
   },
 };
