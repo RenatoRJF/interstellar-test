@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <AppMap
-      id="map"
       :api-key="mapProps.apiKey"
-      :center="mapProps.center">
+      :center="mapProps.center"
+      @polygon-click="polygonClick">
     </AppMap>
   </div>
 </template>
@@ -16,6 +16,11 @@ export default {
   name: 'app',
   components: {
     AppMap,
+  },
+  methods: {
+    polygonClick(e) {
+      console.log(e.properties);
+    },
   },
   computed: {
     ...mapState([
