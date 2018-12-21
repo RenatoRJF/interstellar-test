@@ -1,24 +1,47 @@
 <template>
   <div id="app">
-    <AppMap />
+    <AppMap
+      id="map"
+      :api-key="mapProps.apiKey"
+      :center="mapProps.center">
+    </AppMap>
   </div>
 </template>
 
 <script>
 import AppMap from '@/components/AppMap.vue';
+import { mapState } from 'vuex';
 
 export default {
   name: 'app',
   components: {
     AppMap,
   },
+  computed: {
+    ...mapState([
+      'mapProps',
+    ]),
+  },
 };
 </script>
 
 <style lang="scss">
-#app {
+body, html {
+  font-size: 1em;
+  height: 100%;
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
 }
 </style>
